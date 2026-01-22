@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 from . import schemas, crud
 from .database import SessionLocal, engine, Base
@@ -27,3 +27,12 @@ def list_emissoes(db:Session = Depends(get_db)):
         return emissoes
     except Exception as e:
         print(f'Erro:{e}')
+
+@app.get("/emissoes/{id}", response_model=schemas.EmissaoResponse)
+def list_emissao(id:int, db:Session = Depends(get_db)):
+    emissao = crud.get_emissao_id(db, id)
+    if emissao is None:
+        raise HTTPException(404, detail="Erro: Emissão não encontrada...")
+    return emissao
+
+    
