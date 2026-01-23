@@ -35,4 +35,11 @@ def list_emissao(id:int, db:Session = Depends(get_db)):
         raise HTTPException(404, detail="Erro: Emissão não encontrada...")
     return emissao
 
+@app.put("/emissoes/{id}", response_model=schemas.EmissaoResponse)
+def update_emissao(id:int, schema: schemas.EmissaoBase, db:Session = Depends(get_db)):
+    emissao = crud.update_emissao(db, id, schema)
+    if emissao is None:
+        raise HTTPException(404, detail="Erro: Emissão não encontrada...")
+    
+    return emissao
     
