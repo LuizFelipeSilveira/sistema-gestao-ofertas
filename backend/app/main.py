@@ -43,3 +43,7 @@ def update_emissao(id:int, schema: schemas.EmissaoBase, db:Session = Depends(get
     
     return emissao
     
+@app.get("/stats")
+def get_stats(db:Session = Depends(get_db)):
+    stats = crud.get_stats(db)
+    return stats
