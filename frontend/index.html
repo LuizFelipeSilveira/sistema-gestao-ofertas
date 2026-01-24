@@ -6,6 +6,7 @@
     <title>Teste - JGP Crédito</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body style="margin: 0;">
 
@@ -38,15 +39,48 @@
 
         <main class="content">
             <img class="icon" src="img/icon_credito.png" alt="logo">
+
             <section id="dashboard">
                 <header>
                     <h1>DASHBOARD</h1>
                 </header>
             </section>
+
             <section id="emissoes">
                 <header>
-                    <h1>EMISSÕES</h1>
+                    <h1 style="margin-bottom: 20px; margin-top: 40px;">EMISSÕES</h1>
                 </header>
+
+                <div class="filters-container">
+                    <div class="filter-item">
+                        <label for="filtro-data">Data</label>
+                        <input type="text" id="filtro-data" onkeyup="filtrarTabela()" placeholder="Filtrar data">
+                    </div>
+                    <div class="filter-item">
+                        <label for="filtro-emissor">Emissor</label>
+                        <input type="text" id="filtro-emissor" onkeyup="filtrarTabela()" placeholder="Filtrar emissor">
+                    </div>
+                    <div class="filter-item">
+                        <label for="filtro-tipo">Tipo</label>
+                        <input type="text" id="filtro-tipo" onkeyup="filtrarTabela()" placeholder="Filtrar tipo">
+                    </div>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>DATA</th>
+                            <th>EMISSOR</th>
+                            <th>TIPO</th>
+                            <th>VALOR</th>
+                            <th>LINK</th>
+                            <th>AÇÃO</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabela-corpo">
+                        <tr><td colspan="6" style="padding:20px; text-align:center;">Carregando dados...</td></tr>
+                    </tbody>
+                </table>
             </section>
         </main>
 

@@ -34,7 +34,6 @@ h1 {
     justify-content: flex-start;
     flex: 0.5;
     width: 20vw;
-    
 }
 
 .logo {
@@ -58,7 +57,7 @@ h1 {
 }
 
 .content .icon {
-    position: absolute;
+    position: fixed;
     bottom: 10px;
     right: 10px;
 }
@@ -138,4 +137,86 @@ h1 {
     font-size: clamp(3px, 2vw, 35px);
     font-weight: 700;
     font-family: 'Inter', sans-serif;
+}
+
+.filters-container {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
+    display: flex;
+    gap: 15px; 
+    flex-wrap: wrap; 
+}
+
+.filter-item {
+    flex: 1; 
+    min-width: 150px; 
+    display: flex;
+    flex-direction: column;
+}
+
+.filter-item label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #666;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+}
+
+.filter-item input {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    outline: none;
+    font-family: 'Inter', sans-serif;
+    transition: 0.3s;
+}
+
+table {
+    width: 100%;
+    padding: 40px;
+    border-collapse: collapse;
+    font-family: 'Inter', sans-serif; 
+    color: #000; 
+}
+
+thead th {
+    background-color: transparent; 
+    color: #000;
+    font-weight: 700; 
+    font-size: 0.85rem;
+    padding: 12px 10px; 
+    text-align: left;
+    border-bottom: 2px solid #000; 
+}
+
+tbody td {
+    padding: 15px 10px;
+    font-size: 0.9rem;
+    color: #333;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+
+tbody td:nth-child(2) {
+    text-align: left;
+    font-weight: 600; 
+}
+
+tbody td:nth-child(4), 
+thead th:nth-child(4) {
+    text-align: right; 
+}
+
+tbody td:nth-child(1), thead th:nth-child(1),
+tbody td:nth-child(3), thead th:nth-child(3),
+tbody td:nth-child(5), thead th:nth-child(5),
+tbody td:nth-child(6), thead th:nth-child(6) {
+    text-align: center;
 }
