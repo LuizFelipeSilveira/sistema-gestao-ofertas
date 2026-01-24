@@ -16,14 +16,14 @@
                 <img class="logo" src="img/jgp_logo.png" alt="logo">
             </div>
             <div class="div_botoes">
-                <button class="botao" type="button">DASHBOARD</button>
-                <button class="botao" type="button">EMISSÕES</button>
+                <button class="botao" type="button" onclick="navegar('dashboard')">DASHBOARD</button>
+                <button class="botao" type="button" onclick="navegar('emissoes')">EMISSÕES</button>
             </div>
 
             <div class="div_stats">
                 <div class="item_stats">
                     <span class="label_stats">TOTAL EMISSÕES</span>
-                    <span class="value_stats" id="qtd">...</span>
+                    <span class="value_stats" id="quantidade">...</span>
                 </div>
                 <div class="item_stats">
                     <span class="label_stats">VALOR TOTAL</span>
@@ -32,14 +32,6 @@
                 <div class="item_stats">
                     <span class="label_stats">TICKET MÉDIO</span>
                     <span class="value_stats" id="ticket_medio">...</span>
-                </div>
-                <div class="item_stats">
-                    <span class="label_stats">MAIOR VALOR</span>
-                    <span class="value_stats" id="valor_maximo">...</span>
-                </div>
-                <div class="item_stats">
-                    <span class="label_stats">MENOR VALOR</span>
-                    <span class="value_stats" id="valor_minimo">...</span>
                 </div>
             </div>
         </div>
@@ -61,6 +53,6 @@
     </div>
 
     <script src="script.js"></script>
-    
+
 </body>
 </html>
