@@ -1,62 +1,73 @@
 .app {
     display: flex;
+    flex-direction: column;
     height: 100vh;
     font-family: 'Inter', sans-serif;
     background-color: #f4f4f9;
 }
 
+h1 {
+    margin: 0;
+}
+
 .content {
     flex: 1; 
-    padding: 40px;
+    padding: 20px;
     overflow-y: auto; 
     position: relative;
 }
 
-.sidebar {
-    
+.navbar {
+    align-items: center;
+    display: flex;
     background-color: black;
     flex-shrink: 0;
-    width: 20vw;
-    height: 100vh;
+    width: 100vw;
+    height: 15vh;
+    z-index: 1000; 
+    border-bottom: solid 3px #30ba09;
 }
 
 .div_logo {
-    height: 15vh;
-    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex: 0.5;
+    width: 20vw;
+    
 }
 
 .logo {
-  width: 8vw;
-  transition: transform 0.3s ease;
-  padding: 20px;
+    width: 10vw;
+    transition: transform 0.3s ease;
+    padding: 20px;
 }
 
 .logo:hover {
-  transform: scale(1.1);
+    transform: scale(1.1);
 }
 
 .icon {
-  width: 5vw;
-  transition: transform 0.3s ease;
-  justify-content: end;
+    width: 5vw;
+    transition: transform 0.3s ease;
+    justify-content: end;
 }
 
 .icon:hover {
-  transform: scale(1.1);
+    transform: scale(1.1);
 }
 
 .content .icon {
-  position: absolute;
-    top: 10px;
+    position: absolute;
+    bottom: 10px;
     right: 10px;
 }
 
 .div_botoes {
-    display:flex;
-    flex-direction: column;
+    display: flex;
     align-items: center;
     justify-content: center;
-    height: 14vw;
+    flex: 1;
 }
 
 .botao {
@@ -82,31 +93,49 @@
 }
 
 .div_stats {
-    margin-top: auto; 
-    padding: 10px;
     display: flex;
-    flex-direction: column;
-    gap: 20px;
+    flex: 3.5;
+    align-items: center;
+    justify-content:space-evenly;
+    padding: 10px;
+}
+
+@media (max-width: 480px) {
+    .div_stats {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .item_stats{
+        text-align: center;
+        padding-top: 10px !important;
+    }
 }
 
 .item_stats {
     text-align: center;
-    padding-top: 25px;
+
+    transition: transform 0.3s ease;
+}
+
+.item_stats:hover {
+    transform: scale(1.05);
 }
 
 .label_stats {
     display: block;
     color: white;
-    font-size: clamp(3px, 1.5vw, 24px);
+    font-size: clamp(3px, 0.7vw, 24px);
     text-transform: uppercase;
     letter-spacing: 1px;
     margin-bottom: 5px;
 }
 
+
 .value_stats {
     display: block;
     color: #30ba09; 
-    font-size: clamp(3px, 1.2vw, 24px);
+    font-size: clamp(3px, 2vw, 35px);
     font-weight: 700;
     font-family: 'Inter', sans-serif;
 }
