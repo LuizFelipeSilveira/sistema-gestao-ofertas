@@ -38,8 +38,6 @@ def get_stats(db: Session):
     ticket_medio = 0
     if qtd > 0:
         ticket_medio = valor_total/qtd
-    
-    media = db.query(func.avg(models.Emissao.valor)).scalar()
 
     valor_maximo = db.query(func.max(models.Emissao.valor)).scalar()
 
@@ -48,6 +46,5 @@ def get_stats(db: Session):
     return {"quantidade" : qtd,
             "valor_total" : valor_total,
             "ticket_medio" : ticket_medio,
-            "media" : media,
             "valor_maximo" : valor_maximo,
             "valor_minimo" : valor_minimo}
