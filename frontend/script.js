@@ -116,7 +116,70 @@ function filtrarTabela() {
     });
 }
 
+async function abrirModalEdicao(id) {
+    try {
+        const response = await fetch(`${API_URL}/emissoes/${id}`);
+        if (!response.ok) throw new Error("Erro ao buscar dados");
+        const dados = await response.json();
+
+        document.getElementById('edit-id').value = dados.id;
+        document.getElementById('edit-emissor').value = dados.emissor;
+        document.getElementById('edit-tipo').value = dados.tipo;
+        document.getElementById('edit-valor').value = dados.valor;
+        document.getElementById('edit-link').value = dados.link || "";
+
+        const dataFormatada = dados.data.split('T')[0];
+        document.getElementById('edit-data').value = dataFormatada;
+
+        document.getElementById('modal-edicao').style.display = 'flex';
+
+    } catch (error) {
+        alert("Erro ao carregar dados para edição.");
+        console.error(error);
+    }
+}
+
+function fecharModal() {
+    document.getElementById('modal-edicao').style.display = 'none';
+}
+
+document.getElementById('form-edicao').addEventListener('submit', async function(event) {
+    event.preventDefault(); 
+
+    const id = document.getElementById('edit-id').value;
+    const dadosAtualizados = {
+        data: document.getElementById('edit-data').value,
+        emissor: document.getElementById('edit-emissor').value,
+        tipo: document.getElementById('edit-tipo').value,
+        valor: parseFloat(document.getElementById('edit-valor').value),
+        link: document.getElementById('edit-link').value
+    };
+
+    try {
+        const response = await fetch(`${API_URL}/emissoes/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(dadosAtualizados)
+        });
+
+        if (response.ok) {
+            alert("Emissão atualizada.");
+            fecharModal();
+            carregarTabela(); 
+            carregarStats();  
+        } else {
+            alert("Erro ao salvar alterações.");
+        }
+
+    } catch (error) {
+        console.error("Erro na requisição:", error);
+        alert("Erro de conexão com o servidor.");
+    }
+});
+
 document.addEventListener("DOMContentLoaded", () => {
     carregarStats();
-    navegar('emissoes');
+    navegar('dashboard');
 });
