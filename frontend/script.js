@@ -194,31 +194,57 @@ function fecharModal() {
 document.getElementById('form-edicao').addEventListener('submit', async function(event) {
     event.preventDefault(); 
 
+    document.querySelectorAll('.input-error').forEach(el => el.classList.remove('input-error'));
+    document.querySelectorAll('.error-message').forEach(el => el.style.display = 'none');
+
+    const campoEmissor = document.getElementById('edit-emissor');
+    const campoValor = document.getElementById('edit-valor');
+    
+    const emissor = campoEmissor.value.trim();
+    const valor = parseFloat(campoValor.value);
+    
+    let temErro = false;
+
+    if (!emissor) {
+        campoEmissor.classList.add('input-error');
+        document.getElementById('error-emissor').style.display = 'block';
+        temErro = true;
+    }
+
+    if (isNaN(valor) || valor <= 0) {
+        campoValor.classList.add('input-error');
+        document.getElementById('error-valor').style.display = 'block';
+        temErro = true;
+    }
+
+    if (temErro) return;
+
     const id = document.getElementById('edit-id').value;
     const dadosAtualizados = {
         data: document.getElementById('edit-data').value,
-        emissor: document.getElementById('edit-emissor').value,
+        emissor: emissor,
         tipo: document.getElementById('edit-tipo').value,
-        valor: parseFloat(document.getElementById('edit-valor').value),
+        valor: valor,
         link: document.getElementById('edit-link').value
     };
 
     try {
         const response = await fetch(`${API_URL}/emissoes/${id}`, {
             method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(dadosAtualizados)
         });
 
         if (response.ok) {
-            alert("Emissão atualizada.");
+            alert("Emissão atualizada com sucesso!"); 
             fecharModal();
-            carregarTabela(); 
-            carregarStats();  
+            carregarTabela();
+            carregarStats();
+            carregarDashboard(); 
         } else {
-            alert("Erro ao salvar alterações.");
+            const erroApi = await response.json();
+            const msg = erroApi.detail && erroApi.detail[0] ? erroApi.detail[0].msg : "Erro ao salvar.";
+            alert("Erro do Servidor: " + msg);
         }
 
     } catch (error) {
