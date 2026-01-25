@@ -179,7 +179,177 @@ document.getElementById('form-edicao').addEventListener('submit', async function
     }
 });
 
+let charts = {}; 
+
+async function carregarDashboard() {
+    try {
+        const response = await fetch(`${API_URL}/analytics`);
+        const dados = await response.json();
+
+        const paletaCores = [
+            '#30ba09', 
+            '#9f9a90', 
+            '#0b0805', 
+            '#744a24',
+        ];
+
+        let mapaCores = {};
+        let corIndex = 0;
+
+        const todosTipos = new Set([
+            ...dados.qtd_por_tipo.map(d => d.label),
+            ...dados.valor_por_tipo.map(d => d.label)
+        ]);
+
+        todosTipos.forEach(tipo => {
+            mapaCores[tipo] = paletaCores[corIndex % paletaCores.length];
+            corIndex++;
+        });
+
+        const getCoresParaDados = (listaDados) => {
+            return listaDados.map(item => mapaCores[item.label]);
+        };
+
+        const ctxEvolucao = document.getElementById('chartEvolucao').getContext('2d');
+        if (charts['evolucao']) charts['evolucao'].destroy();
+
+        charts['evolucao'] = new Chart(ctxEvolucao, {
+            type: 'bar',
+            data: {
+                labels: dados.evolucao.labels,
+                datasets: [
+                    {
+                        label: 'Volume Mensal',
+                        data: dados.evolucao.valores,
+                        backgroundColor: '#30ba09',
+                        order: 2
+                    },
+                    {
+                        label: 'Média Acumulada', 
+                        data: dados.evolucao.media, 
+                        type: 'line',
+                        borderColor: '#000',
+                        borderWidth: 2,
+                        pointRadius: 2, 
+                        tension: 0.3,
+                        order: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: true } }
+            }
+        });
+
+        const coresQtd = getCoresParaDados(dados.qtd_por_tipo);
+        criarGraficoPizza('chartQtdTipo', 'doughnut', dados.qtd_por_tipo, coresQtd);
+
+        const ctxValor = document.getElementById('chartValorTipo').getContext('2d');
+        if (charts['valorTipo']) charts['valorTipo'].destroy();
+
+        const coresValor = getCoresParaDados(dados.valor_por_tipo);
+        charts['valorTipo'] = new Chart(ctxValor, {
+            type: 'bar',
+            data: {
+                labels: dados.valor_por_tipo.map(d => d.label),
+                datasets: [{
+                    label: 'Volume Total',
+                    data: dados.valor_por_tipo.map(d => d.value),
+                    backgroundColor: coresValor,
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true } }
+            }
+        });
+
+        const ctxTop5 = document.getElementById('chartTopEmissores').getContext('2d');
+        if (charts['top5']) charts['top5'].destroy();
+        charts['top5'] = new Chart(ctxTop5, {
+            type: 'bar',
+            data: {
+                labels: dados.top_emissores.map(d => d.label),
+                datasets: [{
+                    label: 'Volume Total',
+                    data: dados.top_emissores.map(d => d.value),
+                    backgroundColor: '#30ba09',
+                    borderRadius: 4,
+                    indexAxis: 'y' 
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: 'y', 
+                plugins: { legend: { display: false } }
+            }
+        });
+
+        const tbody = document.getElementById('tabela-detalhe-top5');
+        tbody.innerHTML = '';
+        const fmt = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
+        
+        let ultimoEmissor = "";
+        dados.tabela_cruzada.forEach(item => {
+            let estiloBorda = "";
+            let nomeEmissorVisual = item.emissor;
+            let estiloNome = "font-weight: bold; color: #000;";
+            
+            if (item.emissor !== ultimoEmissor) {
+                estiloBorda = "border-top: 2px solid #000;";
+                ultimoEmissor = item.emissor; 
+            } else {
+                estiloBorda = "border-top: none;"; 
+                nomeEmissorVisual = "";
+            }
+            
+            tbody.innerHTML += `
+                <tr style="${estiloBorda}">
+                    <td style="padding: 10px; ${estiloNome}">${nomeEmissorVisual}</td>
+                    <td style="padding: 10px; border-left: 1px solid #eee;">${item.tipo}</td>
+                    <td style="text-align: center; padding: 10px; border-left: 1px solid #eee;">${item.qtd}</td>
+                    <td style="text-align: right; color: #30ba09; padding: 10px; border-left: 1px solid #eee;">${fmt.format(item.valor)}</td>
+                </tr>
+            `;
+        });
+
+    } catch (error) {
+        console.error("Erro dashboard:", error);
+    }
+}
+
+function criarGraficoPizza(idCanvas, tipo, dadosArray, cores) {
+    const ctx = document.getElementById(idCanvas).getContext('2d');
+    if (charts[idCanvas]) charts[idCanvas].destroy();
+
+    charts[idCanvas] = new Chart(ctx, {
+        type: tipo,
+        data: {
+            labels: dadosArray.map(d => d.label),
+            datasets: [{
+                data: dadosArray.map(d => d.value),
+                backgroundColor: cores,
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { 
+                legend: { position: 'right', labels: { boxWidth: 10, font: {size: 10} } } 
+            }
+        }
+    });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     carregarStats();
+    carregarDashboard();
     navegar('dashboard');
 });

@@ -7,6 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body style="margin: 0;">
 
@@ -18,13 +19,13 @@
             </div>
             <div class="div_botoes">
                 <button class="botao" type="button" onclick="navegar('dashboard')">DASHBOARD</button>
-                <button class="botao" type="button" onclick="navegar('emissoes')">EMISSÕES</button>
+                <button class="botao" type="button" onclick="navegar('emissoes')">OFERTAS</button>
             </div>
 
             <div class="div_stats">
                 <div class="item_stats">
                     <span class="value_stats" id="quantidade">...</span>
-                    <span class="label_stats">EMISSÕES</span>
+                    <span class="label_stats">OFERTAS</span>
                 </div>
                 <div class="item_stats">
                     <span class="value_stats" id="valor_total">...</span>
@@ -44,11 +45,58 @@
                     <h1>DASHBOARD</h1>
                     <img class="icon" src="img/icon_credito.png" alt="logo">
                 </header>
+                
+                <div class="chart-container-full">
+                    <h3>Evolução mensal (Valor Captado)</h3>
+                    <div style="height: 300px;">
+                        <canvas id="chartEvolucao"></canvas>
+                    </div>
+                </div>
+
+                <div class="charts-row">
+                    <div class="chart-box">
+                        <h3>Registros por tipo (Qtd)</h3>
+                        <div class="canvas-holder">
+                            <canvas id="chartQtdTipo"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-box">
+                        <h3>Volume por tipo (Valor)</h3>
+                        <div class="canvas-holder">
+                            <canvas id="chartValorTipo"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="charts-row">
+                    <div class="chart-box">
+                        <h3>Ranking top 5 emissores</h3>
+                        <div class="canvas-holder">
+                            <canvas id="chartTopEmissores"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="chart-box" style="overflow-y: auto;">
+                        <h3>Detalhamento top 5 (Tipo x Quantidade x Valor)</h3>
+                        <table class="mini-table">
+                            <thead>
+                                <tr>
+                                    <th>Emissor</th>
+                                    <th>Tipo</th>
+                                    <th style="text-align: center;">Qtd</th>
+                                    <th style="text-align: right;">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabela-detalhe-top5">
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
             </section>
 
             <section id="emissoes">
                 <header>
-                    <h1>EMISSÕES</h1>
+                    <h1>OFERTAS</h1>
                     <img class="icon" src="img/icon_credito.png" alt="logo">
                 </header>
 
@@ -75,7 +123,7 @@
                             <th>TIPO</th>
                             <th>VALOR</th>
                             <th>LINK</th>
-                            <th>AÇÃO</th>
+                            <th>EDITAR</th>
                         </tr>
                     </thead>
                     <tbody id="tabela-corpo">

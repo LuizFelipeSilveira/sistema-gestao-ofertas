@@ -62,3 +62,7 @@ def update_emissao(id:int, schema: schemas.EmissaoBase, db:Session = Depends(get
 def get_stats(db:Session = Depends(get_db)):
     stats = crud.get_stats(db)
     return stats
+
+@app.get("/analytics")
+def get_analytics(db: Session = Depends(get_db)):
+    return crud.get_dados_dashboard(db)
