@@ -118,23 +118,71 @@ function filtrarTabela() {
 
 async function abrirModalEdicao(id) {
     try {
+        // --- PARTE 1: DADOS DA EMISSÃO (CRÍTICO) ---
+        // Se isso falhar, paramos tudo pois não dá pra editar sem dados.
         const response = await fetch(`${API_URL}/emissoes/${id}`);
-        if (!response.ok) throw new Error("Erro ao buscar dados");
+        if (!response.ok) throw new Error("Erro ao buscar dados da emissão");
         const dados = await response.json();
 
+        // Preenche inputs
         document.getElementById('edit-id').value = dados.id;
         document.getElementById('edit-emissor').value = dados.emissor;
         document.getElementById('edit-tipo').value = dados.tipo;
         document.getElementById('edit-valor').value = dados.valor;
         document.getElementById('edit-link').value = dados.link || "";
 
-        const dataFormatada = dados.data.split('T')[0];
-        document.getElementById('edit-data').value = dataFormatada;
+        if (dados.data) {
+            const dataFormatada = dados.data.split('T')[0];
+            document.getElementById('edit-data').value = dataFormatada;
+        }
 
+        // --- PARTE 2: HISTÓRICO (OPCIONAL) ---
+        // Colocamos num try/catch interno. Se falhar, o modal abre mesmo assim!
+        const tbodyHist = document.getElementById('lista-historico');
+        tbodyHist.innerHTML = '<tr><td style="color:#999; text-align:center;">Carregando histórico...</td></tr>';
+
+        try {
+            const respHist = await fetch(`${API_URL}/emissoes/${id}/historico`);
+            
+            if (respHist.ok) {
+                const listaHist = await respHist.json();
+                tbodyHist.innerHTML = ''; // Limpa
+
+                if (listaHist.length === 0) {
+                    tbodyHist.innerHTML = '<tr><td style="color:#999; text-align:center; padding:10px;">Nenhuma alteração registrada.</td></tr>';
+                } else {
+                    listaHist.forEach(log => {
+                        const dataLog = new Date(log.data_modificacao).toLocaleString('pt-BR');
+                        tbodyHist.innerHTML += `
+                            <tr>
+                                <td style="padding: 8px 0; border-bottom: 1px solid #eee;">
+                                    <div style="margin-bottom: 2px;">
+                                        <span style="color: #30ba09; font-weight: bold; font-size: 0.85rem;">${log.campo_alterado.toUpperCase()}</span>
+                                    </div>
+                                    <div style="font-size: 0.9rem; color: #555;">
+                                        <span style="text-decoration: line-through; color: #999;">${log.valor_antigo}</span> 
+                                        <span style="margin: 0 5px;">➝</span> 
+                                        <span style="font-weight: 600;">${log.valor_novo}</span>
+                                    </div>
+                                    <div style="font-size: 0.75rem; color: #aaa; margin-top: 2px;">${dataLog}</div>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                }
+            } else {
+                throw new Error("Erro API Histórico");
+            }
+        } catch (erroHist) {
+            console.warn("Falha ao carregar histórico:", erroHist);
+            tbodyHist.innerHTML = '<tr><td style="color:orange; text-align:center;">Não foi possível carregar o histórico.</td></tr>';
+        }
+
+        // --- PARTE 3: ABRIR ---
         document.getElementById('modal-edicao').style.display = 'flex';
 
     } catch (error) {
-        alert("Erro ao carregar dados para edição.");
+        alert("Erro crítico ao carregar emissão.");
         console.error(error);
     }
 }

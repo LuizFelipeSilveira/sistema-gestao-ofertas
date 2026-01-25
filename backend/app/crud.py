@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import func, extract, desc
-from . import models
-from . import schemas
+from datetime import datetime
+from . import models, schemas
 
 
 def get_emissoes(db: Session):
@@ -12,20 +12,34 @@ def get_emissao_id(db: Session, emissao_id: int):
     data = db.query(models.Emissao).filter(models.Emissao.id == emissao_id).first()
     return data
 
-def update_emissao(db: Session, emissao_id: int, schema: schemas.EmissaoBase):
+def update_emissao(db: Session, emissao_id: int, dados_novos: schemas.EmissaoCreate):
+
     data = db.query(models.Emissao).filter(models.Emissao.id == emissao_id).first()
     if not data:
         return None
     
-    data.data = schema.data
-    data.tipo = schema.tipo
-    data.emissor = schema.emissor
-    data.valor = schema.valor
-    data.link = schema.link
+    dados_dict = dados_novos.model_dump()
+    campos_para_monitorar = ['emissor', 'valor', 'tipo', 'link']
+    
+    for campo in campos_para_monitorar:
+        valor_antigo = getattr(data, campo)
+        valor_novo = dados_dict.get(campo)
+
+        if str(valor_antigo) != str(valor_novo):
+            log = models.Historico(
+                emissoes_id=data.id,
+                campo_alterado=campo,
+                valor_antigo=str(valor_antigo),
+                valor_novo=str(valor_novo),
+                data_modificacao=datetime.now()
+            )
+            db.add(log)
+    
+    for key, value in dados_dict.items():
+        setattr(data, key, value)
 
     db.commit()
     db.refresh(data)
-
     return data
 
 def get_stats(db: Session):
@@ -105,3 +119,6 @@ def get_dados_dashboard(db: Session):
                 for x in detalhe_query
             ]
         }
+
+def get_historico(db: Session, emissao_id: int):
+    return db.query(models.Historico).filter(models.Historico.emissoes_id == emissao_id).order_by(models.Historico.data_modificacao.desc()).all()
