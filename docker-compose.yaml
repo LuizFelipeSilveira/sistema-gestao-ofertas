@@ -1,0 +1,17 @@
+version: '3.8'
+services:
+  api:
+    build: ./backend
+    container_name: jgp-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    restart: always
+  web:
+    build: ./frontend
+    container_name: jgp-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - api
