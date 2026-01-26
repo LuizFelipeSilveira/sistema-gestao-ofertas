@@ -164,7 +164,7 @@ header {
 .value_stats {
     display: block;
     color: #30ba09; 
-    font-size: clamp(3px, 1.6vw, 35px);
+    font-size: clamp(3px, 3vw, 35px);
     font-weight: 700;
     font-family: 'Inter', sans-serif;
 }
