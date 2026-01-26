@@ -1,8 +1,8 @@
-# 📊 Sistema de Gestão de Emissão de Ofertas
+# 📊 Sistema de gestão de emissão de ofertas
 
 A aplicação tem como objetivo a visualização, e gerenciamento de ofertas emitidas. O projeto inclui importação dos dados em Excel, CRUD, dashboard analítico e edição de efertas com registro em histórico. 
 
-## Tecnologias Utilizadas
+## Tecnologias utilizadas
 
 ### Backend
 - **Python 3.12** e **FastAPI**: Ferramentas escolhidas pelo alto desempenho e documentação automática (Swagger).
@@ -15,7 +15,7 @@ A aplicação tem como objetivo a visualização, e gerenciamento de ofertas emi
 - **Chart.js**: Utilizado para criação de gráficos do dashboard.
 - **Nginx**: Servidor web performático para servir arquivos no ambiente Docker.
 
-## Instruções de Uso
+## Instruções de uso
 
 ### Pré-requisito
 - Docker
@@ -23,30 +23,34 @@ A aplicação tem como objetivo a visualização, e gerenciamento de ofertas emi
 
 ### Etapa 1
 
-Com o repositório clonado, subir os containers no Docker com o comando: 
+Com o repositório clonado, subir os containers no Docker no terminal com o comando: 
+
 
 **docker-compose up -d --build**
 
+
 ### Etapa 2
 
-Digite os seguintes comandos no terminal para inserir os dados no banco.
+Em seguida, na pasta raiz do projeto, digite os comandos para inserir os dados no banco:
 
-Na pasta raiz do projeto:
 
 **cd backend**
+
 **pip install -r requirements.txt**
+
 **python import_data.py**
+
 
 ### Etapa 3
 
 Acesse a aplicação pelo link **http://localhost**
 
-## Atributos da Aplicação
+## Atributos da aplicação
 
 - **Validação dos dados**: A aplicação conta com validação visual no Frontend, que retorna feedback ao usuários em casos de inserção de dados não permitidas, assim como validação no backend com o Pydantic que impede que dados inválidos cheguem ao banco.
 - **Histórico de Alterações**: Todas as alterações das ofertas são registradas em uma tabela Historico, registrando a data e valores "antes e depois" de cada alteração, garantindo rastreabilidade.
 
-## Melhorias Futuras
+## Melhorias futuras
 
 - **Banco de dados mais robusto**: Migrar para banco mais robustos como o PostgreSQL para suportar dados mais complexos e alta concorrência.
 - **Filtragem de dados no backend**: Atualmente a filtragem é feita no frontend, mas poderia ser implemntada na API para evitar sobrecargas na transferência.
